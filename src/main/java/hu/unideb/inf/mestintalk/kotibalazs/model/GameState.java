@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * This class implements a the game field (board). It also represents every game state information needed for the rules.
  */
-public class GameState {
+public class GameState implements Cloneable{
 
 	public GameState(){
 		// init game
@@ -38,6 +38,11 @@ public class GameState {
 	private Player activePlayer;
 
 	private boolean endGame;
+
+	private boolean virtualStateFlag;
+
+	// events
+	private List<GameStateChangeAware> changeAwares;
 
 	// setters and getters
 
@@ -101,6 +106,23 @@ public class GameState {
 		this.endGame = endGame;
 	}
 
+	public boolean isVirtualState() {
+		return virtualStateFlag;
+	}
+
+	public void setVirtualState(boolean virtualStateFlag) {
+		this.virtualStateFlag = virtualStateFlag;
+	}
+
+	public List<GameStateChangeAware> getChangeAwares() {
+		return changeAwares;
+	}
+
+	public void setChangeAwares(List<GameStateChangeAware> changeAwares) {
+		this.changeAwares = changeAwares;
+	}
+
+
 	// custom methods
 
 	/**
@@ -111,9 +133,14 @@ public class GameState {
 		this.lastY = null;
 		this.activePlayer = null;
 		this.gameBoard = HashBasedTable.create();
-		this.rules = new LinkedHashSet<GameRule>();
-		this.players = new LinkedList<Player>();
+		this.rules = new LinkedHashSet<>();
+		this.players = new LinkedList<>();
+		this.changeAwares = new LinkedList<>();
 		this.endGame = false;
+		this.virtualStateFlag = false;
+
+		// notify aware classes (trigger event handlers)
+		notifyChangeAwareClasses();
 	}
 
 	/**
@@ -165,9 +192,15 @@ public class GameState {
 	 * @param player the player to register.
 	 */
 	public void registerPlayer(Player player){
+		// add the player
 		this.players.add(player);
+
+		// if no active player, set the actual player
 		if(this.activePlayer == null)
 			this.activePlayer = player;
+
+		// notify aware classes (trigger event handlers)
+		notifyChangeAwareClasses();
 	}
 
 	/**
@@ -195,10 +228,45 @@ public class GameState {
 
 		// adding new square
 		gameBoard.put(x, y, square);
+
 		// applying game rules
 		this.applyRules();
+
+		// notify aware classes (trigger event handlers)
+		notifyChangeAwareClasses();
+
 	}
 
+	/**
+	 * This method will register a game state change event handler
+	 * @param gameStateChangeAware a @{@link Class} that implements @{@link GameStateChangeAware}
+	 */
+	public void registerChangeAwareClass(GameStateChangeAware gameStateChangeAware){
+		this.changeAwares.add(gameStateChangeAware);
+	}
 
+	/**
+	 * This method will notify all registered @{@link GameStateChangeAware} classes
+	 */
+	private void notifyChangeAwareClasses(){
+		// skip if actual gameState is virtual
+		if(isVirtualState()) return;
+		// call event handlers
+		changeAwares.stream().forEach(
+				aware -> aware.onGameStateChanged(this)
+		);
+	}
+
+	/**
+	 * This method will make a virtual copy from a state
+	 * @return the cloned virtual copy
+	 * @throws CloneNotSupportedException
+	 */
+	public GameState getVirtualCopy() throws CloneNotSupportedException{
+		GameState clone = (GameState) this.clone();
+		// set the clone a virtual copy
+		clone.setVirtualState(true);
+		return clone;
+	}
 
 }

@@ -3,22 +3,50 @@ package hu.unideb.inf.mestintalk.kotibalazs.model.actor;
 import hu.unideb.inf.mestintalk.kotibalazs.model.GameState;
 import javafx.scene.paint.Color;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This class implements a basic player.
  */
 public abstract class Player {
-//
-//	/**
-//	 * Default constructor
-//	 * @param color the deriser player color on the ui.
-//	 */
-//	public Player(Color color){
-//		this.playerColor = color;
-//	}
 
-	private Color playerColor;
+	// color randomization
+	private static List<Color> builtInColors = Arrays.asList(
+			Color.RED,
+			Color.AQUA,
+			Color.GREEN,
+			Color.YELLOW,
+			Color.VIOLET,
+			Color.AZURE,
+			Color.BROWN,
+			Color.BLUE,
+			Color.CORAL
+		);
 
-	private Integer score;
+	// this will be stepped to 0 for first time
+	private static int colorPointer = -1;
+
+	public static void resetColorPointer(){
+		colorPointer = -1;
+	}
+
+	/**
+	 * Constuctor
+	 */
+	public Player(){
+
+		//step color pointer
+		colorPointer++;
+		if(colorPointer >= builtInColors.size())
+			colorPointer = 0;
+
+		this.playerColor = builtInColors.get(colorPointer);
+	}
+
+	private Color playerColor = Color.WHITE;
+
+	private Integer score = 0;
 
 	/**
 	 * Player Color on the UI.
@@ -61,8 +89,5 @@ public abstract class Player {
 	 * This method will be clalled when a new player becomes active.
 	 */
 	public abstract void triggerStep(GameState board);
-
-
-
 
 }
