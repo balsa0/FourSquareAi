@@ -1,6 +1,9 @@
 package hu.unideb.inf.mestintalk.kotibalazs.ui;
 
 import hu.unideb.inf.mestintalk.kotibalazs.model.GameState;
+import hu.unideb.inf.mestintalk.kotibalazs.rule.PlayerRotationRule;
+import hu.unideb.inf.mestintalk.kotibalazs.rule.SquareCheckerRule;
+import hu.unideb.inf.mestintalk.kotibalazs.rule.WinnerCheckerRule;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -23,6 +26,9 @@ public class AppWindow extends Application {
 	 */
 	private void setupGame(){
 		gameState = new GameState();
+		gameState.registerGameRule(new PlayerRotationRule());
+		gameState.registerGameRule(new SquareCheckerRule());
+		gameState.registerGameRule(new WinnerCheckerRule());
 	}
 
 	/**
@@ -38,6 +44,10 @@ public class AppWindow extends Application {
 
 		// game board
 		gameBoard = new GameBoard(gameState);
+		// register the game board for change events
+		gameState.registerChangeAwareClass(gameBoard);
+		// register for toolbar
+		gameToolBar.setGameBoard(gameBoard);
 
 		// root layout
 		VBox root = new VBox();
@@ -62,6 +72,12 @@ public class AppWindow extends Application {
 		primaryStage.getIcons().add( new Image(getClass().getClassLoader().getResourceAsStream( "icon.png" )));
 		primaryStage.getIcons().add( new Image(getClass().getClassLoader().getResourceAsStream( "icon48.png" )));
 		primaryStage.getIcons().add( new Image(getClass().getClassLoader().getResourceAsStream( "icon24.png" )));
+
+		primaryStage.setMinWidth(700);
+		primaryStage.setMinHeight(650);
+
+		primaryStage.setWidth(700);
+		primaryStage.setHeight(650);
 
 		// setting up a game
 		setupGame();

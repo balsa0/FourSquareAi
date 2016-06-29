@@ -5,8 +5,11 @@ import hu.unideb.inf.mestintalk.kotibalazs.model.GameStateChangeAware;
 import hu.unideb.inf.mestintalk.kotibalazs.model.actor.AiPlayer;
 import hu.unideb.inf.mestintalk.kotibalazs.model.actor.HumanPlayer;
 import hu.unideb.inf.mestintalk.kotibalazs.model.actor.Player;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.util.Duration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +20,8 @@ import java.util.Map;
 public class GameToolBar extends ToolBar implements GameStateChangeAware{
 
 	private GameState gameState;
+
+	private GameBoard gameBoard;
 
 	private ProgressIndicator progressIndicator;
 	private Separator separator0;
@@ -102,6 +107,14 @@ public class GameToolBar extends ToolBar implements GameStateChangeAware{
 
 	public void setAddAiPlayer(Button addAiPlayer) {
 		this.addAiPlayer = addAiPlayer;
+	}
+
+	public GameBoard getGameBoard() {
+		return gameBoard;
+	}
+
+	public void setGameBoard(GameBoard gameBoard) {
+		this.gameBoard = gameBoard;
 	}
 
 	public GameToolBar(GameState gameState){
@@ -229,7 +242,7 @@ public class GameToolBar extends ToolBar implements GameStateChangeAware{
 			newPlayerButton.setText("♥");
 			newPlayerButton.setStyle("-fx-background-color: \"" + newPlayer.getPlayerColor() + "\";");
 
-			newPlayerButton.setDisable(true);
+//			newPlayerButton.setDisable(true);
 
 			// add player button
 			playerButtons.put(newPlayer, newPlayerButton);
@@ -252,7 +265,7 @@ public class GameToolBar extends ToolBar implements GameStateChangeAware{
 			newPlayerButton.setText("♦");
 			newPlayerButton.setStyle("-fx-background-color: \"" + newPlayer.getPlayerColor() + "\";");
 
-			newPlayerButton.setDisable(true);
+//			newPlayerButton.setDisable(true);
 
 			// add player button
 			playerButtons.put(newPlayer, newPlayerButton);
@@ -268,6 +281,29 @@ public class GameToolBar extends ToolBar implements GameStateChangeAware{
 
 		});
 
+		leftBtn.setOnAction(event -> {
+				if (gameBoard != null)
+					gameBoard.moveLeft();
+			}
+		);
+
+		rightBtn.setOnAction(event -> {
+					if (gameBoard != null)
+						gameBoard.moveRight();
+				}
+		);
+
+		upBtn.setOnAction(event -> {
+					if (gameBoard != null)
+						gameBoard.moveUp();
+				}
+		);
+
+		downBtn.setOnAction(event -> {
+					if (gameBoard != null)
+						gameBoard.moveDown();
+				}
+		);
 	}
 
 	/**
@@ -276,11 +312,24 @@ public class GameToolBar extends ToolBar implements GameStateChangeAware{
 	 */
 	@Override
 	public void onGameStateChanged(GameState gameState) {
+
+		this.gameState = gameState;
+
 		// player buttons activation
 		playerButtons.forEach(
 				(player, button) -> {
-					button.setDisable(!player.equals(this.gameState.getActivePlayer()));
+					button.setOpacity(player.equals(this.gameState.getActivePlayer()) ? 1 : .4);
+					button.setTooltip(new Tooltip("Score: "+player.getScore()+" points"));
 				}
 		);
+
+		// show indicator if active player is not a human player
+		if(gameState.getActivePlayer() != null) {
+			if (gameState.getActivePlayer() instanceof AiPlayer) {
+				this.progressIndicator.setVisible(true);
+			} else {
+				this.progressIndicator.setVisible(false);
+			}
+		}
 	}
 }

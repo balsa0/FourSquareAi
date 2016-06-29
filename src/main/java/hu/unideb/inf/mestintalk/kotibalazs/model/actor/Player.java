@@ -16,12 +16,19 @@ public abstract class Player {
 			Color.RED,
 			Color.AQUA,
 			Color.GREEN,
-			Color.YELLOW,
+			Color.CORAL,
 			Color.VIOLET,
-			Color.AZURE,
+			Color.CHARTREUSE,
 			Color.BROWN,
 			Color.BLUE,
-			Color.CORAL
+			Color.DARKBLUE,
+			Color.STEELBLUE,
+			Color.BLUEVIOLET,
+			Color.DARKGOLDENROD,
+			Color.DARKKHAKI,
+			Color.YELLOWGREEN,
+			Color.DARKCYAN,
+			Color.TOMATO
 		);
 
 	// this will be stepped to 0 for first time
@@ -77,17 +84,29 @@ public abstract class Player {
 		this.score += score;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if(!(obj instanceof Player))
-			return false;
-
-		return ((Player) obj).getPlayerColor().equals(this.getPlayerColor());
-	}
+//	@Override
+//	public boolean equals(Object obj) {
+//		if(!(obj instanceof Player))
+//			return false;
+//
+//		return ((Player) obj).getPlayerColor().equals(this.getPlayerColor());
+//	}
 
 	/**
 	 * This method will be clalled when a new player becomes active.
 	 */
 	public abstract void triggerStep(GameState board);
+
+	/**
+	 * Tostring gives back the web color code
+	 * @return
+	 */
+	@Override
+	public String toString(){
+		return String.format( "#%02X%02X%02X",
+				(int)( playerColor.getRed() * 255 ),
+				(int)( playerColor.getGreen() * 255 ),
+				(int)( playerColor.getBlue() * 255 ) );
+	}
 
 }

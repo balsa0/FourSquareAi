@@ -21,6 +21,8 @@ public class GameState implements Cloneable{
 
 	public GameState(){
 		// init game
+		this.rules = new LinkedHashSet<>();
+		this.changeAwares = new LinkedList<>();
 		this.initOrResetGame();
 	}
 
@@ -133,9 +135,7 @@ public class GameState implements Cloneable{
 		this.lastY = null;
 		this.activePlayer = null;
 		this.gameBoard = HashBasedTable.create();
-		this.rules = new LinkedHashSet<>();
 		this.players = new LinkedList<>();
-		this.changeAwares = new LinkedList<>();
 		this.endGame = false;
 		this.virtualStateFlag = false;
 
@@ -148,9 +148,9 @@ public class GameState implements Cloneable{
 	 * @return true if the game can be started.
 	 */
 	public boolean isReadyToPlay(){
-		return !(players == null || players.size() < 2
-				|| rules == null || rules.size() == 0
-				|| gameBoard == null || endGame);
+		return players != null && players.size() >= 2
+				&& rules != null && rules.size() > 0
+				&& gameBoard != null && !endGame;
 	}
 
 	/**
