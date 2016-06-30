@@ -1,8 +1,8 @@
-# FourSquareAi
+# FourSquare Infinity
 
-Author: Balázs Kóti
-License: GNU GPLv3
-Copyleft: 2016, Balázs Kóti
+Author: Balázs Kóti |
+License: GNU GPLv3 |
+Copyleft: 2016, Balázs Kóti |
 Created for educational purposes
 
 ## 0. License
