@@ -9,6 +9,10 @@
 	mvn clean compile jfx:build-jar
 	-->
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<groupId>hu.unideb.inf.mestintalk.kotibalazs</groupId>
 	<artifactId>FourSquare</artifactId>
 	<version>1.0-SNAPSHOT</version>
