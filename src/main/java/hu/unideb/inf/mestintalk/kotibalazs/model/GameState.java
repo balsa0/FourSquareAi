@@ -28,23 +28,23 @@ public class GameState implements Cloneable{
 
 	// properties
 
-	private Table<Integer, Integer, Square> gameBoard;
+	protected Table<Integer, Integer, Square> gameBoard;
 
-	private Set<GameRule> rules;
+	protected Set<GameRule> rules;
 
-	private List<Player> players;
+	protected List<Player> players;
 
-	private Integer lastX;
-	private Integer lastY;
+	protected Integer lastX;
+	protected Integer lastY;
 
-	private Player activePlayer;
+	protected Player activePlayer;
 
-	private boolean endGame;
+	protected boolean endGame;
 
-	private boolean virtualStateFlag;
+	protected boolean virtualStateFlag;
 
 	// events
-	private List<GameStateChangeAware> changeAwares;
+	protected List<GameStateChangeAware> changeAwares;
 
 	// setters and getters
 
@@ -60,7 +60,7 @@ public class GameState implements Cloneable{
 		return rules;
 	}
 
-	private void setRules(Set<GameRule> rules) {
+	protected void setRules(Set<GameRule> rules) {
 		this.rules = rules;
 	}
 
@@ -68,7 +68,7 @@ public class GameState implements Cloneable{
 		return players;
 	}
 
-	private void setPlayers(List<Player> players) {
+	protected void setPlayers(List<Player> players) {
 		this.players = players;
 	}
 
@@ -164,7 +164,7 @@ public class GameState implements Cloneable{
 	/**
 	 * This method applies registered rules on the game. This will keep the order of registration.
 	 */
-	private void applyRules(){
+	protected void applyRules(){
 		for (GameRule rule : getRules()){
 			// validate game state beforehand
 			try {
@@ -248,7 +248,7 @@ public class GameState implements Cloneable{
 	/**
 	 * This method will notify all registered @{@link GameStateChangeAware} classes
 	 */
-	private void notifyChangeAwareClasses(){
+	protected void notifyChangeAwareClasses(){
 		// skip if actual gameState is virtual
 		if(isVirtualState()) return;
 		// call event handlers
@@ -262,10 +262,18 @@ public class GameState implements Cloneable{
 	 * @return the cloned virtual copy
 	 * @throws CloneNotSupportedException
 	 */
-	public VirtualGameState getVirtualCopy() throws CloneNotSupportedException{
-		VirtualGameState clone = (VirtualGameState) this.clone();
+	public VirtualGameState getVirtualCopy(){
+		VirtualGameState clone = null;
+		try {
+			clone = (VirtualGameState) this.clone();
+		} catch (CloneNotSupportedException e) {
+			System.out.println("Cloning is not supported");
+		}
 		// set the clone a virtual copy
 		clone.setVirtualState(true);
+		if(this instanceof VirtualGameState){
+			clone.setDepth(((VirtualGameState)this).getDepth() + 1);
+		}
 		return clone;
 	}
 

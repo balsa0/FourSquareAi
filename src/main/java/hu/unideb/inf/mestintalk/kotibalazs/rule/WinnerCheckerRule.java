@@ -27,6 +27,5 @@ public class WinnerCheckerRule extends AbstractGameRule {
 			board.setActivePlayer(player);
 			board.setEndGame(true);
 		});
-
 	}
 }

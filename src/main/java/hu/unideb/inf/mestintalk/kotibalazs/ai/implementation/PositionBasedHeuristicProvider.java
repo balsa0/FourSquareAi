@@ -12,13 +12,19 @@ import java.util.stream.Collector;
 /**
  * This class implements base heuristic for the AI
  */
-public class BaseHeuristicProvider implements HeuristicProvider {
+public class PositionBasedHeuristicProvider implements HeuristicProvider {
 
 	@Override
 	public Heuristic calculate(GameState board) {
 		Heuristic h = new Heuristic();
 		board.getPlayers().stream().forEach(
-				player -> h.put(player, calculateForPlayer(player,board))
+				player ->{
+					if(board.isEndGame() && board.getActivePlayer() == player)
+						h.put(player, Integer.MAX_VALUE);
+					else
+						h.put(player, calculateForPlayer(player,board));
+
+				}
 		);
 		return h;
 	}

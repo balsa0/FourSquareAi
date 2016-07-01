@@ -3,6 +3,7 @@ package hu.unideb.inf.mestintalk.kotibalazs.ai.implementation;
 import com.google.common.collect.Table;
 import hu.unideb.inf.mestintalk.kotibalazs.ai.api.Operator;
 import hu.unideb.inf.mestintalk.kotibalazs.model.GameState;
+import hu.unideb.inf.mestintalk.kotibalazs.model.actor.Player;
 import hu.unideb.inf.mestintalk.kotibalazs.model.board.Square;
 
 import java.util.List;
@@ -11,9 +12,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Created by Balsa on 2016. 07. 01..
+ * This operator will attack the winning player
  */
-public class AttackOperator implements Operator{
+public class TopScoringDefenseOperator implements Operator{
 
 	/**
 	 * The number of squares for player is bigger than 0
@@ -24,7 +25,7 @@ public class AttackOperator implements Operator{
 	public boolean applicable(GameState board) {
 		return board.getGameBoard().cellSet().stream().filter(
 				cell -> (cell.getValue().getOwner() == board.getActivePlayer())
-		).count() > 0;
+		).count() > 0 && getTopScoringPlayer(board) != board.getActivePlayer();
 	}
 
 	/**
@@ -35,9 +36,10 @@ public class AttackOperator implements Operator{
 	@Override
 	public GameState apply(GameState board) {
 
-		// find my own cells
+		Player topPlayer = getTopScoringPlayer(board);
+
 		List<Table.Cell> myCells = board.getGameBoard().cellSet().stream().filter(
-				cell -> (cell.getValue().getOwner() == board.getActivePlayer())
+				cell -> (cell.getValue().getOwner() == topPlayer)
 		).collect(Collectors.toList());
 
 
@@ -45,12 +47,13 @@ public class AttackOperator implements Operator{
 		Long selectedMax = Long.MIN_VALUE;
 
 		for (Table.Cell cell : myCells){
-			Long val = getSurroundingCellsValue(board, (Integer) cell.getRowKey(), (Integer) cell.getColumnKey());
+			Long val = getSurroundingCellsValue(board, (Integer) cell.getRowKey(), (Integer) cell.getColumnKey(), topPlayer);
 			if(selectedMax <= val){
 				selectedMax = val;
 				selected = cell;
 			}
 		}
+
 
 		Random random = new Random();
 		Integer range = 1;
@@ -72,7 +75,7 @@ public class AttackOperator implements Operator{
 
 	}
 
-	private long getSurroundingCellsValue(GameState board, Integer x, Integer y){
+	private long getSurroundingCellsValue(GameState board, Integer x, Integer y, Player p){
 
 		// own cells
 		Long myCells = IntStream.rangeClosed(0,9).filter(
@@ -81,7 +84,7 @@ public class AttackOperator implements Operator{
 					Integer cy = y + value % 3;
 					Square actSquare = board.getGameBoard().get(cx, cy);
 
-					return actSquare != null && actSquare.getOwner() == board.getActivePlayer();
+					return actSquare != null && actSquare.getOwner() == p;
 				}
 		).count();
 
@@ -92,11 +95,23 @@ public class AttackOperator implements Operator{
 					Integer cy = y + value % 3;
 					Square actSquare = board.getGameBoard().get(cx, cy);
 
-					return actSquare != null && actSquare.getOwner() != board.getActivePlayer();
+					return actSquare != null && actSquare.getOwner() != p;
 				}
 		).count();
 
 		return myCells - enemyCells;
+	}
+
+	private Player getTopScoringPlayer(GameState board){
+		Integer maxScore = Integer.MIN_VALUE;
+		Player selected = board.getPlayers().get(0);
+		for (Player p : board.getPlayers()){
+			if(p.getScore() > maxScore){
+				maxScore = p.getScore();
+				selected = p;
+			}
+		}
+		return selected;
 	}
 
 }

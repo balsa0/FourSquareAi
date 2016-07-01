@@ -1,6 +1,6 @@
 package hu.unideb.inf.mestintalk.kotibalazs.model.actor;
 
-import hu.unideb.inf.mestintalk.kotibalazs.ai.implementation.BaseHeuristicProvider;
+import hu.unideb.inf.mestintalk.kotibalazs.ai.implementation.PositionBasedHeuristicProvider;
 import hu.unideb.inf.mestintalk.kotibalazs.ai.api.HeuristicProvider;
 import hu.unideb.inf.mestintalk.kotibalazs.ai.api.StepRecommender;
 import hu.unideb.inf.mestintalk.kotibalazs.exception.InconsistentGameStateError;
@@ -17,7 +17,7 @@ public class AiPlayer extends Player{
 
 	public AiPlayer(StepRecommender stepRecommender){
 		this.stepRecommender = stepRecommender;
-		this.heuristicProvider = new BaseHeuristicProvider();
+		this.heuristicProvider = new PositionBasedHeuristicProvider();
 	}
 
 	@Override

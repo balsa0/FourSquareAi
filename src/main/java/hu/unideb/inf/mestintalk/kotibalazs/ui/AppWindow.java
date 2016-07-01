@@ -26,9 +26,10 @@ public class AppWindow extends Application {
 	 */
 	private void setupGame(){
 		gameState = new GameState();
+		// order is important
+		gameState.registerGameRule(new WinnerCheckerRule());
 		gameState.registerGameRule(new PlayerRotationRule());
 		gameState.registerGameRule(new SquareCheckerRule());
-		gameState.registerGameRule(new WinnerCheckerRule());
 	}
 
 	/**

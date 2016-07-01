@@ -33,7 +33,8 @@ public class PlayerRotationRule extends AbstractGameRule {
 		}
 
 		// trigger step action for player
-		board.getActivePlayer().triggerStep(board);
+		if(!board.isEndGame())
+			board.getActivePlayer().triggerStep(board);
 
 	}
 }
