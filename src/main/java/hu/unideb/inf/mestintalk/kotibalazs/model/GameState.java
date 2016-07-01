@@ -2,6 +2,8 @@ package hu.unideb.inf.mestintalk.kotibalazs.model;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import hu.unideb.inf.mestintalk.kotibalazs.ai.api.Heuristic;
+import hu.unideb.inf.mestintalk.kotibalazs.ai.api.Operator;
 import hu.unideb.inf.mestintalk.kotibalazs.exception.InvalidStepException;
 import hu.unideb.inf.mestintalk.kotibalazs.exception.GameRuleViolationException;
 import hu.unideb.inf.mestintalk.kotibalazs.exception.InconsistentGameStateError;
@@ -25,6 +27,12 @@ public class GameState implements Cloneable{
 		this.changeAwares = new LinkedList<>();
 		this.initOrResetGame();
 	}
+
+	private Operator operator;
+
+	private Integer depth = 0;
+
+	private Heuristic playerHeuristic;
 
 	// properties
 
@@ -122,6 +130,38 @@ public class GameState implements Cloneable{
 
 	public void setChangeAwares(List<GameStateChangeAware> changeAwares) {
 		this.changeAwares = changeAwares;
+	}
+
+	public Operator getOperator() {
+		return operator;
+	}
+
+	public void setOperator(Operator operator) {
+		this.operator = operator;
+	}
+
+	public Integer getDepth() {
+		return depth;
+	}
+
+	public void setDepth(Integer depth) {
+		this.depth = depth;
+	}
+
+	public Heuristic getPlayerHeuristic() {
+		return playerHeuristic;
+	}
+
+	public void setPlayerHeuristic(Heuristic playerHeuristic) {
+		this.playerHeuristic = playerHeuristic;
+	}
+
+	public boolean isVirtualStateFlag() {
+		return virtualStateFlag;
+	}
+
+	public void setVirtualStateFlag(boolean virtualStateFlag) {
+		this.virtualStateFlag = virtualStateFlag;
 	}
 
 
@@ -262,18 +302,16 @@ public class GameState implements Cloneable{
 	 * @return the cloned virtual copy
 	 * @throws CloneNotSupportedException
 	 */
-	public VirtualGameState getVirtualCopy(){
-		VirtualGameState clone = null;
+	public GameState getVirtualCopy(){
+		GameState clone = null;
 		try {
-			clone = (VirtualGameState) this.clone();
+			clone = (GameState) this.clone();
 		} catch (CloneNotSupportedException e) {
 			System.out.println("Cloning is not supported");
 		}
 		// set the clone a virtual copy
 		clone.setVirtualState(true);
-		if(this instanceof VirtualGameState){
-			clone.setDepth(((VirtualGameState)this).getDepth() + 1);
-		}
+		clone.setDepth(this.depth + 1);
 		return clone;
 	}
 

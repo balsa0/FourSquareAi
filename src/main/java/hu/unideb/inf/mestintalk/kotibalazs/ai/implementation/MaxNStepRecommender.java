@@ -6,7 +6,6 @@ import hu.unideb.inf.mestintalk.kotibalazs.ai.api.Operator;
 import hu.unideb.inf.mestintalk.kotibalazs.ai.api.StepRecommender;
 import hu.unideb.inf.mestintalk.kotibalazs.exception.NoApplicableOperatorException;
 import hu.unideb.inf.mestintalk.kotibalazs.model.GameState;
-import hu.unideb.inf.mestintalk.kotibalazs.model.VirtualGameState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +29,9 @@ public class MaxNStepRecommender implements StepRecommender{
 	}
 
 	@Override
-	public VirtualGameState processAndAct(GameState actualGameState, HeuristicProvider heuristicProvider) {
+	public GameState processAndAct(GameState actualGameState, HeuristicProvider heuristicProvider) {
 
-		boolean isVirtual = false;
-		if(actualGameState instanceof VirtualGameState) {
-			isVirtual = true;
-		}
+		boolean isVirtual = actualGameState.isVirtualState();
 
 		// get only the applicable operators
 		List<Operator> applicableOperators = operators.stream().filter(
@@ -48,12 +44,12 @@ public class MaxNStepRecommender implements StepRecommender{
 			return actualGameState.getVirtualCopy();
 		}
 
-		VirtualGameState nextState = actualGameState.getVirtualCopy();
+		GameState nextState = actualGameState.getVirtualCopy();
 
 		if(actualGameState.isEndGame()){
 			nextState.setPlayerHeuristic(heuristicProvider.calculate(nextState));
 			return nextState;
-		}else if(isVirtual && ((VirtualGameState)actualGameState).getDepth() >= maxDepth){
+		}else if(isVirtual && (actualGameState).getDepth() >= maxDepth){
 			nextState.setPlayerHeuristic(heuristicProvider.calculate(nextState));
 			return nextState;
 		}else{
@@ -62,8 +58,8 @@ public class MaxNStepRecommender implements StepRecommender{
 
 			for(Operator operator : applicableOperators ){
 
-				VirtualGameState appliedState = processAndAct(
-						(VirtualGameState) operator.apply(nextState.getVirtualCopy())
+				GameState appliedState = processAndAct(
+						 operator.apply(nextState.getVirtualCopy())
 						,heuristicProvider
 				);
 
