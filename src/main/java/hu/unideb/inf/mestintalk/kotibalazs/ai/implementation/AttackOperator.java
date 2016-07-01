@@ -45,7 +45,7 @@ public class AttackOperator implements Operator{
 		Long selectedMin = Long.MIN_VALUE;
 
 		for (Table.Cell cell : myCells){
-			Long val = getSurroundingCellsValue(board, (Integer) cell.getColumnKey(), (Integer) cell.getRowKey());
+			Long val = getSurroundingCellsValue(board, (Integer) cell.getRowKey(), (Integer) cell.getColumnKey());
 			if(selectedMin >= val){
 				selectedMin = val;
 				selected = cell;
@@ -55,13 +55,13 @@ public class AttackOperator implements Operator{
 		Random random = new Random();
 		Integer range = 1;
 		Integer x = 0, y = 0;
-		while (board.getGameBoard().get((Integer) selected.getColumnKey() + x, (Integer) selected.getRowKey() + y)  != null){
+		while (board.getGameBoard().get((Integer) selected.getRowKey() + x, (Integer) selected.getColumnKey() + y)  != null){
 			x = random.nextInt(range);
 			y = random.nextInt(range);
 			range++;
 		}
 
-		board.step((Integer) selected.getColumnKey() + x, (Integer) selected.getRowKey() + y, new Square(board.getActivePlayer()));
+		board.step((Integer) selected.getRowKey() + x, (Integer) selected.getColumnKey() + y, new Square(board.getActivePlayer()));
 
 		return board;
 

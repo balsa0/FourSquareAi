@@ -76,8 +76,8 @@ public class GameBoard extends GridPane implements GameStateChangeAware{
 		grid.cellSet().stream().forEach(
 				cell ->  {
 					// calculating real position
-					Integer realX = cell.getColumnKey() + xOffset;
-					Integer realY = cell.getRowKey() + yOffset;
+					Integer realX = cell.getRowKey() + xOffset;
+					Integer realY = cell.getColumnKey() + yOffset;
 					// getting the actual square (can be null if cell is empty)
 					Square actualSquare = gameState.getGameBoard().get(realX, realY);
 					// getting corresponding button
