@@ -262,8 +262,8 @@ public class GameState implements Cloneable{
 	 * @return the cloned virtual copy
 	 * @throws CloneNotSupportedException
 	 */
-	public GameState getVirtualCopy() throws CloneNotSupportedException{
-		GameState clone = (GameState) this.clone();
+	public VirtualGameState getVirtualCopy() throws CloneNotSupportedException{
+		VirtualGameState clone = (VirtualGameState) this.clone();
 		// set the clone a virtual copy
 		clone.setVirtualState(true);
 		return clone;

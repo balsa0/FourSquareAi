@@ -1,14 +1,27 @@
-package hu.unideb.inf.mestintalk.kotibalazs.ai;
+package hu.unideb.inf.mestintalk.kotibalazs.ai.implementation;
 
 import com.google.common.collect.Table;
+import hu.unideb.inf.mestintalk.kotibalazs.ai.api.Heuristic;
+import hu.unideb.inf.mestintalk.kotibalazs.ai.api.HeuristicProvider;
 import hu.unideb.inf.mestintalk.kotibalazs.model.GameState;
 import hu.unideb.inf.mestintalk.kotibalazs.model.actor.Player;
 import hu.unideb.inf.mestintalk.kotibalazs.model.board.Square;
 
+import java.util.stream.Collector;
+
 /**
  * This class implements base heuristic for the AI
  */
-public class BaseHeuristic implements Heuristic{
+public class BaseHeuristicProvider implements HeuristicProvider {
+
+	@Override
+	public Heuristic calculate(GameState board) {
+		Heuristic h = new Heuristic();
+		board.getPlayers().stream().forEach(
+				player -> h.put(player, calculateForPlayer(player,board))
+		);
+		return h;
+	}
 
 	/**
 	 * This method calculates heuristic fotr a given player
@@ -16,8 +29,7 @@ public class BaseHeuristic implements Heuristic{
 	 * @param board the game state
 	 * @return the heuristic value
 	 */
-	@Override
-	public Integer calculate(Player player, GameState board) {
+	public Integer calculateForPlayer(Player player, GameState board) {
 
 		Integer sumValue = 0;
 

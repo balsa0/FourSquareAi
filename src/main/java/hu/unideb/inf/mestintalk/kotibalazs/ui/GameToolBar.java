@@ -1,5 +1,6 @@
 package hu.unideb.inf.mestintalk.kotibalazs.ui;
 
+import hu.unideb.inf.mestintalk.kotibalazs.ai.implementation.MaxNStepRecommender;
 import hu.unideb.inf.mestintalk.kotibalazs.model.GameState;
 import hu.unideb.inf.mestintalk.kotibalazs.model.GameStateChangeAware;
 import hu.unideb.inf.mestintalk.kotibalazs.model.actor.AiPlayer;
@@ -250,6 +251,11 @@ public class GameToolBar extends ToolBar implements GameStateChangeAware{
 			// registering the player
 			this.gameState.registerPlayer(newPlayer);
 
+			// trigger step if player is ai
+			if(gameState.getActivePlayer() != null && gameState.isReadyToPlay())
+				gameState.getActivePlayer().triggerStep(this.gameState);
+
+
 			// add button to the UI
 			this.getItems().add(newPlayerButton);
 		});
@@ -258,7 +264,7 @@ public class GameToolBar extends ToolBar implements GameStateChangeAware{
 		addAiPlayer.setOnAction(event -> {
 
 			// creating a new player
-			Player newPlayer = new AiPlayer();
+			Player newPlayer = new AiPlayer(new MaxNStepRecommender());
 
 			// creating button for the new player
 			Button newPlayerButton = new Button();
@@ -273,8 +279,9 @@ public class GameToolBar extends ToolBar implements GameStateChangeAware{
 			// registering the player
 			this.gameState.registerPlayer(newPlayer);
 
-			// trigger step for ai player
-			newPlayer.triggerStep(this.gameState);
+			// trigger step if player is ai
+			if(gameState.getActivePlayer() != null && gameState.isReadyToPlay())
+				gameState.getActivePlayer().triggerStep(this.gameState);
 
 			// add button to the UI
 			this.getItems().add(newPlayerButton);

@@ -36,6 +36,7 @@ Created for educational purposes
 - Maximum number of players: *virtually infinite* (including Human and Ai players)
 - Maximum size of the game board: *virtually infinite* (coordinates stored as integers)
 - Original version of the game: http://2-szemelyes.jatek-online.hu/four_square.php
+- Ai reference: https://dea.lib.unideb.hu/dea/handle/2437/130106
 
 ## 4. Gameplay
 - Start the game executable

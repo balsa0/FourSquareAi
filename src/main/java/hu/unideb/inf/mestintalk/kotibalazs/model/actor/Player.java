@@ -109,4 +109,14 @@ public abstract class Player {
 				(int)( playerColor.getBlue() * 255 ) );
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Player))
+			return false;
+		if(((Player) obj).getPlayerColor() != this.getPlayerColor())
+			return false;
+		if(((Player) obj).getScore() != this.getScore())
+			return false;
+		return true;
+	}
 }

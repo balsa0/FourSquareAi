@@ -1,4 +1,4 @@
-package hu.unideb.inf.mestintalk.kotibalazs.ai;
+package hu.unideb.inf.mestintalk.kotibalazs.ai.api;
 
 import hu.unideb.inf.mestintalk.kotibalazs.model.GameState;
 
